@@ -1,0 +1,15 @@
+[project]
+name = "closeloop"
+version = "1.0.0"
+description = "AI Finance Controller — tiered multi-source reconciliation with measured accuracy and a full audit trail."
+requires-python = ">=3.10"
+readme = "README.md"
+
+[tool.pytest.ini_options]
+# Make `src/` importable so `pytest` runs cleanly from the repo root.
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.setuptools.packages.find]
+where = ["src"]

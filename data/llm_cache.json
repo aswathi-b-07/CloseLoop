@@ -1,0 +1,121 @@
+{
+  "0555540618b0319c13f4e87fd6c6fd97888acf7d": {
+    "confidence": 0.88,
+    "exception": "NONE",
+    "reason": "Gemini adjudged benign (not an exception): The presence of settlement ID setl_pending_133700003 with a settled_at date of 2026-07-15 indicates Razorpay has processed the batch, making the absent bank credit a benign T+1 timing difference.",
+    "status": "MATCHED",
+    "tier": "LLM"
+  },
+  "1f5249eee5424970b7e0ad41ab3b4010d8816135": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The reported net amount of 7792.22 is exactly 18.00 lower than the expected 7810.22 (captured 7999.00 minus fee 159.98 and tax 28.80). A difference of 18.00 is significantly higher than expected rounding noise, indicating a genuine fee mismatch.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "25c9633bb74f3cc51a8713b4a60a4713fc296d73": {
+    "confidence": 0.98,
+    "exception": "AMOUNT_MISMATCH",
+    "reason": "Gemini adjudged AMOUNT_MISMATCH: The captured amount of 269.1 is 29.9 (10%) lower than the order amount of 299.0, which far exceeds any standard rounding or FX drift and represents a partial capture.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "2642f59cf51501231b9ab5a34bc02e85b84a1b4c": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The calculated net amount (299.00 - 5.98 - 1.08 = 291.94) exceeds the reported net amount of 288.94 by exactly 3.00, which is too large to be rounding drift and represents a genuine fee calculation mismatch.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "4b9e4061b15721b02e695c60fe654c4dc8566b14": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The calculated net amount of 976.39 (999.99 captured minus 20.0 fee and 3.6 tax) differs from the reported net amount of 981.39 by exactly 5.00, which is too large to be benign rounding drift.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "4f8ea4b35a8c0db4eed13ae9bad41a79df382e6a": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The discrepancy of 8.00 between the expected net amount (1464.11) and actual net amount (1456.11) significantly exceeds typical rounding noise, indicating a genuine fee mismatch.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "5b0c109162d445490a92e8687809703a753272f1": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The difference of 8.00 between the calculated net amount (1464.11) and reported net amount (1472.11) is too large to be attributed to rounding drift, indicating a genuine fee mismatch.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "6372ac662b0cd3bf0f2963ac11557673fcac9bb4": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The calculated net amount (7999.0 - 159.98 - 28.8 = 7810.22) differs from the reported net amount (7815.22) by exactly 5.00, which exceeds normal penny/rounding drift and indicates a real fee reporting discrepancy.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "66deffe02c8fec31d69bc6f04ffe1f7b73b30975": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The difference of 3.00 between the calculated net amount (4881.51) and the reported net amount (4884.51) exceeds standard rounding or FX drift thresholds, indicating a real fee mismatch.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "784cbc9606a5be6584bd222a1bf9fe7e810803ce": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The difference of 18.0 between the expected net amount (2440.51) and the reported net amount (2422.51) is far too large to be rounding drift, indicating a genuine fee calculation or reporting error.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "7e63dd78f00bd6d31b7448f5bceaee5a6077b0bf": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The calculated net amount (2499.00 - 49.98 - 9.00 = 2440.02) differs from the reported net amount (2452.02) by 12.00, which exceeds standard rounding drift and indicates a real fee calculation mismatch.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "7f9383fdc1ebab873beff94dcea5921bee329d12": {
+    "confidence": 0.92,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The reported net amount of 1469.59 exceeds the calculated net amount (1499.99 - 30.0 - 5.4 = 1464.59) by 5.0, which exceeds standard rounding tolerance and indicates a genuine fee calculation discrepancy.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "959a953947a8894ad9e73357012ae4ed75c455d8": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The reported net amount of 499.22 exceeds the calculated net amount of 487.22 (captured minus fee and tax) by 12.00, which is too large to be attributed to rounding or FX drift.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "af911ea5fee90694b8ece2d57073430b870c4ef4": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The calculated net amount of 1464.59 (captured 1499.99 - fee 30.0 - tax 5.4) differs from the reported net amount of 1476.59 by 12.0. This discrepancy is too large to be attributed to simple rounding drift, indicating a genuine fee mismatch.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "b52deb0d9d5e96ccb1a2d669effa0a674cfe0300": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The reported net amount of 1475.62 exceeds the expected net amount of 1463.62 (1499.0 captured minus 29.98 fee and 5.4 tax) by 12.00, which is far too large to be rounding or FX drift.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "d7206bb1e7ea4953775a4dbdb7e6807b33cb7f8e": {
+    "confidence": 0.95,
+    "exception": "FEE_MISMATCH",
+    "reason": "Gemini adjudged FEE_MISMATCH: The difference between net amount (7835.22) and expected net (7810.22) is 25.00, which is too large to be attributed to rounding or FX drift.",
+    "status": "EXCEPTION",
+    "tier": "LLM"
+  },
+  "f6e45559e850d00b5806d2f151d7d7d4c087bc2e": {
+    "confidence": 0.92,
+    "exception": "NONE",
+    "reason": "Gemini adjudged benign (not an exception): The settlement was processed by the PSP with settlement_id setl_pending_133700013 on 2026-07-27, indicating the absent bank credit is due to normal T+1 payout timing rather than a missing settlement.",
+    "status": "MATCHED",
+    "tier": "LLM"
+  }
+}

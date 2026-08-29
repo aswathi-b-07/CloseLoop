@@ -1,0 +1,11 @@
+pandas>=2.1
+python-dateutil>=2.8
+# LLM + API layers. Gemini is called through its OpenAI-compatible endpoint,
+# so the standard `openai` SDK is all we need (free Gemini tier — no billing).
+openai>=1.30
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+python-dotenv>=1.0
+# testing
+pytest>=8.0
