@@ -2,11 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* No external font imports — the spec forbids external network calls.
-   We use the platform system font stack (falls back gracefully everywhere). */
-
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
@@ -18,71 +15,76 @@ body,
 body {
   margin: 0;
   background:
-    radial-gradient(1200px 600px at 15% -10%, rgba(45, 212, 191, 0.08), transparent 60%),
-    radial-gradient(1000px 500px at 100% 0%, rgba(99, 102, 241, 0.08), transparent 55%),
-    #0a0e17;
-  color: #e5e9f0;
+    radial-gradient(1100px 520px at 100% -8%, rgba(51, 149, 255, 0.10), transparent 60%),
+    radial-gradient(900px 480px at -5% 0%, rgba(51, 149, 255, 0.06), transparent 55%),
+    #f4f6fd;
+  color: #0f1b3d;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Custom scrollbar for the dark theme */
+/* Light scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2e3850;
+  background: #cfd6e6;
   border-radius: 8px;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b465f;
+  background: #b6c0d6;
   background-clip: padding-box;
 }
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-white/5 bg-ink-850/70 backdrop-blur-sm shadow-card;
+    @apply rounded-2xl border border-line bg-white shadow-card transition-shadow duration-200;
+  }
+  .card-hover:hover {
+    @apply shadow-card-hover;
   }
   .card-pad {
-    @apply p-5 sm:p-6;
+    @apply p-6 sm:p-7;
   }
   .section-title {
-    @apply text-xs font-semibold uppercase tracking-wider text-slate-400;
+    @apply text-[11px] font-bold uppercase tracking-wider text-slate-500;
   }
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-primary {
-    @apply btn bg-accent text-ink-950 hover:bg-accent-soft shadow-glow;
+    @apply btn bg-rzp text-white hover:bg-rzp-dark shadow-glow;
   }
   .btn-ghost {
-    @apply btn border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10;
+    @apply btn border border-line bg-white text-navy-700 hover:bg-slate-50;
   }
   .chip {
-    @apply inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium transition-colors;
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-white px-2.5 py-1 text-xs font-medium transition-colors;
   }
   .input {
-    @apply rounded-xl border border-white/10 bg-ink-900/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-accent/60 focus:ring-2 focus:ring-accent/20;
+    @apply rounded-xl border border-line bg-white px-3 py-2 text-sm text-navy-800 placeholder:text-slate-400 outline-none focus:border-rzp/60 focus:ring-2 focus:ring-rzp/20;
   }
 }
 
-/* Skeleton shimmer */
+/* Skeleton shimmer (light) */
 .shimmer {
   position: relative;
   overflow: hidden;
+  background: #eef1f8;
 }
 .shimmer::after {
   content: '';
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
   animation: shimmer 1.5s infinite;
 }
 @keyframes shimmer {

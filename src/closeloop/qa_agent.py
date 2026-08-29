@@ -172,12 +172,19 @@ class QAAgent:
 
     @staticmethod
     def _citations_from(name: str, args: dict, result: dict) -> list[str]:
-        """Record which entities an answer is grounded in."""
+        """Record which entities an answer is grounded in.
+
+        We only cite entities the answer actually leans on: a specific
+        drill-down (`get_entity`), or a *targeted* exception query filtered to
+        one type (capped). A broad, unfiltered `list_exceptions` scan is context
+        gathering, not a citation — otherwise every row the agent glanced at
+        would flood the citation list.
+        """
         cites: list[str] = []
         if name == "get_entity" and args.get("entity_id"):
             cites.append(str(args["entity_id"]))
-        if name == "list_exceptions":
-            cites.extend(str(r["entity_id"]) for r in result.get("exceptions", []))
+        if name == "list_exceptions" and args.get("exception_type"):
+            cites.extend(str(r["entity_id"]) for r in result.get("exceptions", [])[:15])
         return cites
 
     # ------------------------------------------------------------------ #
@@ -213,17 +220,14 @@ class QAAgent:
                         "mode": "llm",
                     }
 
-                # Echo the assistant's tool-call message back into the history.
-                messages.append({
-                    "role": "assistant",
-                    "content": msg.content or "",
-                    "tool_calls": [
-                        {"id": tc.id, "type": "function",
-                         "function": {"name": tc.function.name,
-                                      "arguments": tc.function.arguments}}
-                        for tc in msg.tool_calls
-                    ],
-                })
+                # Echo the assistant's tool-call message back into the history
+                # VERBATIM. We must not rebuild it by hand: Gemini 3 attaches a
+                # `thought_signature` to each function call that has to be sent
+                # back unchanged on the next turn, or the API rejects the
+                # follow-up ("Function call is missing a thought_signature").
+                # model_dump preserves those provider-specific extra fields;
+                # exclude_none drops null OpenAI fields Gemini would reject.
+                messages.append(msg.model_dump(exclude_none=True))
                 for tc in msg.tool_calls:
                     args = json.loads(tc.function.arguments or "{}")
                     result = self._dispatch(tc.function.name, args)

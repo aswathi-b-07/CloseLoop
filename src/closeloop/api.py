@@ -101,6 +101,16 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+def _warm_start() -> None:
+    """Run the default reconciliation on boot so every endpoint is immediately
+    usable (survives uvicorn --reload). Cached LLM verdicts make this instant."""
+    try:
+        state.reconcile(seed=1337, n_orders=150, exception_rate=0.30, use_llm=True)
+    except Exception:
+        pass  # a failed warm-start is non-fatal; endpoints self-heal on demand
+
+
 # --------------------------------------------------------------------------- #
 # Request/response models
 # --------------------------------------------------------------------------- #
@@ -128,8 +138,14 @@ def _records(df: pd.DataFrame) -> list[dict]:
 
 def _require_ready() -> None:
     if not state.ready:
-        raise HTTPException(status_code=409,
-                            detail="No reconciliation yet. POST /reconcile first.")
+        # Self-heal: the in-memory run is lost when the process restarts (e.g.
+        # uvicorn --reload). Rather than 409-ing the UI, transparently run the
+        # default reconciliation so /entity, /exceptions, /metrics stay usable.
+        try:
+            state.reconcile(seed=1337, n_orders=150, exception_rate=0.30, use_llm=True)
+        except Exception:
+            raise HTTPException(status_code=409,
+                                detail="No reconciliation yet. POST /reconcile first.")
 
 
 def _business_impact() -> dict:

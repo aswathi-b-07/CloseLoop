@@ -4,26 +4,29 @@ import { Skeleton } from './ui'
 function KpiCard({ label, value, sub, accent, hero, icon }) {
   return (
     <div
-      className={`card card-pad relative overflow-hidden ${
-        hero ? 'ring-1 ring-accent/25' : ''
+      className={`card card-hover card-pad relative overflow-hidden ${
+        hero ? 'ring-1 ring-rzp/15' : ''
       }`}
     >
-      {hero && (
-        <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-accent/10 blur-2xl" />
+      {hero && accent && (
+        <div
+          className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full blur-2xl"
+          style={{ background: `${accent}1f` }}
+        />
       )}
       <div className="flex items-start justify-between">
         <p className="section-title">{label}</p>
         {icon}
       </div>
       <p
-        className={`mt-3 font-extrabold tracking-tight tabular-nums ${
+        className={`mt-3 font-display font-extrabold tracking-tight tabular-nums ${
           hero ? 'text-3xl sm:text-4xl' : 'text-3xl'
         }`}
-        style={accent ? { color: accent } : undefined}
+        style={{ color: accent || '#0F1B3D' }}
       >
         {value}
       </p>
-      {sub && <p className="mt-1 text-sm text-slate-400">{sub}</p>}
+      {sub && <p className="mt-1 text-sm text-slate-500">{sub}</p>}
     </div>
   )
 }
@@ -54,7 +57,7 @@ export default function KpiCards({ metrics, loading }) {
         label="Match rate"
         value={formatPct(metrics.match_rate)}
         sub={`${metrics.n_entities ?? '—'} entities reconciled`}
-        accent="#e5e9f0"
+        accent="#0F1B3D"
       />
       <KpiCard
         label="Detection F1"
@@ -62,7 +65,7 @@ export default function KpiCards({ metrics, loading }) {
         sub={`Recall ${formatRatio(metrics.detection?.recall)} · Precision ${formatRatio(
           metrics.detection?.precision,
         )}`}
-        accent="#818cf8"
+        accent="#1E64E7"
       />
       <KpiCard
         hero
@@ -71,9 +74,9 @@ export default function KpiCards({ metrics, loading }) {
         sub={`${formatPct(bi.auto_reconciled_pct, { fraction: bi.auto_reconciled_pct <= 1 })} of ledger · ${formatINR(
           bi.auto_reconciled_inr,
         )}`}
-        accent="#2dd4bf"
+        accent="#0B9E63"
         icon={
-          <svg viewBox="0 0 24 24" className="h-5 w-5 text-accent/70" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg viewBox="0 0 24 24" className="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         }
@@ -85,9 +88,9 @@ export default function KpiCards({ metrics, loading }) {
         sub={`${formatPct(bi.at_risk_pct, { fraction: bi.at_risk_pct <= 1 })} of ledger · ${formatINR(
           bi.at_risk_inr,
         )}`}
-        accent="#fb7185"
+        accent="#F04438"
         icon={
-          <svg viewBox="0 0 24 24" className="h-5 w-5 text-rose-400/70" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg viewBox="0 0 24 24" className="h-5 w-5 text-red-500" fill="none" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.3 3.86l-8.5 14.7A2 2 0 003.5 21.5h17a2 2 0 001.7-3L13.7 3.86a2 2 0 00-3.4 0z" />
           </svg>
         }

@@ -1,10 +1,31 @@
 import { exceptionMeta, tierMeta } from '../lib/taxonomy'
 import { formatPct } from '../lib/format'
 
+export function CardHeader({ icon, title, subtitle, right }) {
+  return (
+    <div className="mb-5 flex items-start justify-between gap-3 border-b border-line pb-4">
+      <div className="flex items-start gap-3">
+        {icon && (
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rzp-tint text-rzp">
+            {icon}
+          </div>
+        )}
+        <div>
+          <h2 className="font-display text-xl font-extrabold leading-tight tracking-tight text-navy">
+            {title}
+          </h2>
+          {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
+        </div>
+      </div>
+      {right && <div className="shrink-0">{right}</div>}
+    </div>
+  )
+}
+
 export function Spinner({ className = 'h-5 w-5' }) {
   return (
     <svg
-      className={`animate-spin text-accent ${className}`}
+      className={`animate-spin text-rzp ${className}`}
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
@@ -43,16 +64,16 @@ export function TierBadge({ tier, className = '' }) {
 
 export function ConfidenceBar({ value }) {
   const pct = Math.max(0, Math.min(1, Number(value) || 0))
-  const color = pct >= 0.8 ? '#34d399' : pct >= 0.5 ? '#2dd4bf' : '#f59e0b'
+  const color = pct >= 0.8 ? '#12b76a' : pct >= 0.5 ? '#3395FF' : '#f59e0b'
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 w-16 overflow-hidden rounded-full bg-white/10">
+      <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-200">
         <div
           className="h-full rounded-full transition-all"
           style={{ width: `${pct * 100}%`, background: color }}
         />
       </div>
-      <span className="tabular-nums text-xs text-slate-400">
+      <span className="tabular-nums text-xs text-slate-500">
         {formatPct(pct, { decimals: 0 })}
       </span>
     </div>
@@ -61,7 +82,7 @@ export function ConfidenceBar({ value }) {
 
 export function LoadingPanel({ label = 'Loading…' }) {
   return (
-    <div className="flex items-center justify-center gap-3 py-10 text-slate-400">
+    <div className="flex items-center justify-center gap-3 py-10 text-slate-500">
       <Spinner />
       <span className="text-sm">{label}</span>
     </div>
@@ -71,16 +92,16 @@ export function LoadingPanel({ label = 'Loading…' }) {
 export function ErrorPanel({ error, onRetry }) {
   const isDown = error?.status === 0
   return (
-    <div className="flex flex-col items-center gap-3 rounded-xl border border-rose-500/20 bg-rose-500/5 px-6 py-8 text-center">
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-500/15 text-rose-300">
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-6 py-8 text-center">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.3 3.86l-8.5 14.7A2 2 0 003.5 21.5h17a2 2 0 001.7-3L13.7 3.86a2 2 0 00-3.4 0z" />
         </svg>
       </div>
-      <p className="text-sm font-medium text-rose-200">{error?.message || 'Something went wrong.'}</p>
+      <p className="text-sm font-medium text-red-700">{error?.message || 'Something went wrong.'}</p>
       {isDown && (
-        <p className="max-w-md text-xs text-slate-400">
-          Start the backend first, e.g. <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-accent-soft">uvicorn src.app:app --port 8000</code>, then retry.
+        <p className="max-w-md text-xs text-slate-500">
+          Start the backend first, e.g. <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-rzp-darker">uvicorn closeloop.api:app --app-dir src --port 8000</code>, then retry.
         </p>
       )}
       {onRetry && (
@@ -94,12 +115,12 @@ export function ErrorPanel({ error, onRetry }) {
 
 export function EmptyPanel({ label = 'No data yet.' }) {
   return (
-    <div className="flex items-center justify-center py-10 text-sm text-slate-500">
+    <div className="flex items-center justify-center py-10 text-sm text-slate-400">
       {label}
     </div>
   )
 }
 
 export function Skeleton({ className = 'h-4 w-full' }) {
-  return <div className={`shimmer rounded-md bg-white/5 ${className}`} />
+  return <div className={`shimmer rounded-md ${className}`} />
 }

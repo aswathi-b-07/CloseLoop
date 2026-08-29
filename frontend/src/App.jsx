@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from './lib/api'
 import Header from './components/Header'
+import Hero from './components/Hero'
 import KpiCards from './components/KpiCards'
 import AccuracyPanel from './components/AccuracyPanel'
 import TierUsage from './components/TierUsage'
@@ -88,6 +89,8 @@ export default function App() {
           runId={runId}
         />
 
+        <Hero />
+
         {fatalError && !metrics ? (
           <div className="mt-10">
             <ErrorPanel error={fatalError} onRetry={runReconcile} />
@@ -95,7 +98,7 @@ export default function App() {
         ) : (
           <main className="space-y-6 animate-fade-in">
             {fatalError && (
-              <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-300">
+              <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
                 Last run failed: {fatalError.message}. Showing previous results.
               </div>
             )}
@@ -128,7 +131,7 @@ export default function App() {
               <ErrorAnalysis metrics={metrics} loading={loading} onSelect={setSelectedEntity} />
             </div>
 
-            <footer className="pt-2 text-center text-xs text-slate-600">
+            <footer className="pt-2 text-center text-xs text-slate-400">
               CloseLoop — AI Finance Controller · Razorpay AI Buildathon demo
             </footer>
           </main>
