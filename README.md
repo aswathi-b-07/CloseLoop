@@ -195,3 +195,4 @@ data or PII. The generator uses Razorpay-shaped fields (fees, GST-on-fee, T+1
 settlement batching) so the same engine plugs into real Razorpay **test-mode**
 settlement reports later. See [ARCHITECTURE.md](ARCHITECTURE.md) for the full
 design, trade-offs, and how held-out evaluation is kept honest.
+
