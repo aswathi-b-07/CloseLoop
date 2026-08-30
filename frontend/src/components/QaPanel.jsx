@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { api } from '../lib/api'
 import { CardHeader, Spinner, ErrorPanel } from './ui'
 
@@ -20,6 +21,24 @@ const MD_COMPONENTS = {
   a: ({ children, href }) => (
     <a href={href} className="text-rzp underline" target="_blank" rel="noreferrer">{children}</a>
   ),
+  // GFM tables — wrapped so wide tables scroll instead of breaking the layout.
+  table: ({ children }) => (
+    <div className="my-3 overflow-x-auto rounded-xl border border-line">
+      <table className="w-full border-collapse text-left text-sm">{children}</table>
+    </div>
+  ),
+  thead: ({ children }) => <thead className="bg-slate-50">{children}</thead>,
+  th: ({ children }) => (
+    <th className="whitespace-nowrap border-b border-line px-3 py-2 text-xs font-semibold text-slate-500">
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td className="whitespace-nowrap border-b border-line px-3 py-2 tabular-nums text-navy-700 last:border-0">
+      {children}
+    </td>
+  ),
+  tr: ({ children }) => <tr className="even:bg-slate-50/50">{children}</tr>,
 }
 
 const EXAMPLES = [
@@ -119,7 +138,7 @@ export default function QaPanel({ onSelect }) {
         ) : result ? (
           <div className="rounded-xl border border-line bg-slate-50 p-4">
             <div className="text-sm text-navy-700">
-              <ReactMarkdown components={MD_COMPONENTS}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
                 {result.answer || 'No answer returned.'}
               </ReactMarkdown>
             </div>

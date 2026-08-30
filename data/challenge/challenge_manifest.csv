@@ -1,0 +1,31 @@
+entity_id,category,trap,design,truth,description
+CH0001,control,clean_match,deterministic,NONE,Clean ledger=PSP=bank three-way match.
+CH0002,control,clean_match,deterministic,NONE,Clean ledger=PSP=bank three-way match.
+CH0003,control,clean_match,deterministic,NONE,Clean ledger=PSP=bank three-way match.
+CH0010,partial_settlement,partial_capture_large,deterministic,AMOUNT_MISMATCH,"PSP captured 6,000 against a 10,000 order — clear partial capture."
+CH0011,partial_settlement,partial_capture_boundary,gray-zone,AMOUNT_MISMATCH,"45 short on a 1,000 order — inside the amount ambiguity band; rules can only route it, not assert it."
+CH0012,partial_settlement,rounding_within_tolerance,deterministic,NONE,1.40 rounding drift on a 500 order — legitimately within tolerance; engine must NOT flag it.
+CH0013,partial_settlement,shortfall_under_tolerance,adversarial-gap,AMOUNT_MISMATCH,A genuine 1.50 shortfall deliberately parked just under the 2.00 tolerance — a tolerance-based rule cannot catch this.
+CH0020,near_identical_amounts,near_identical_amount,deterministic,NONE,Amount 2499.0 — nearly identical to a sibling order; must not cross-match.
+CH0021,near_identical_amounts,near_identical_amount,deterministic,NONE,Amount 2499.5 — nearly identical to a sibling order; must not cross-match.
+CH0030,duplicate,true_double_charge,deterministic,DUPLICATE_PAYMENT,Two separate captures booked against one order — a real double charge.
+CH0031,duplicate,idempotent_retry_same_id,adversarial-gap,NONE,One payment_id appears twice from a report-export glitch (idempotent retry). It is ONE payment; a naive row count calls it a duplicate.
+CH0032,duplicate,failed_attempt_ignored,deterministic,NONE,One successful capture plus one FAILED attempt — must not be a duplicate.
+CH0040,settlement_timing,never_settled,deterministic,MISSING_SETTLEMENT,Captured at the PSP but no settlement id and no bank credit — genuine miss.
+CH0041,settlement_timing,settlement_next_cycle,adversarial-gap,NONE,Settled per PSP but the bank credit falls in the next cycle. A date-blind rule reads this as a loss; it is only timing.
+CH0042,settlement_timing,delayed_but_present,deterministic,NONE,Credit arrived 8 days late but the settlement ref ties out — clean.
+CH0050,fee,fee_error_large,deterministic,FEE_MISMATCH,Net is 120 short of amount-fee-tax — an unambiguous fee/net break.
+CH0051,fee,fee_error_grayband,gray-zone,FEE_MISMATCH,Net off by 20 — inside the fee ambiguity band; rules can only route it.
+CH0052,fee,wrong_gst_base,deterministic,FEE_MISMATCH,GST wrongly applied to the full amount instead of the fee — realistic PSP-report tax error.
+CH0060,fx_rounding,fx_drift_clean,adversarial-gap,NONE,8.00 FX/rounding drift on an otherwise clean settlement — looks exactly like a small fee error to a magnitude rule.
+CH0061,fx_rounding,fx_drift_subrupee,adversarial-gap,NONE,"Sub-rupee (0.50) rounding drift — clean, but above the 0.01 exact-fee tolerance, so a strict rule still routes it."
+CH0070,refund,refund_not_reflected,deterministic,REFUND_NOT_REFLECTED,PSP marks the payment refunded but the ledger still shows 'paid'.
+CH0071,refund,refund_reflected_clean,deterministic,NONE,Refund handled correctly on both sides; refund debit narrated as a refund — must NOT be flagged.
+CH0072,refund,refund_looks_like_chargeback,adversarial-gap,NONE,A properly reflected refund whose bank debit quotes the payment id — a substring rule mistakes it for a chargeback.
+CH0080,chargeback,chargeback_with_ref,deterministic,CHARGEBACK,Settled then reversed; the debit references the payment id — textbook chargeback.
+CH0081,chargeback,chargeback_no_payment_ref,adversarial-gap,CHARGEBACK,A real chargeback whose debit omits the payment id — a narration-substring rule never sees it and calls the order clean.
+bank_ch_0028,bank_reference,true_orphan_credit,deterministic,UNMATCHED_BANK_CREDIT,A bank credit whose settlement ref matches no known settlement — a genuine unmatched credit.
+CH0091,bank_reference,settlement_ref_case_mismatch,adversarial-gap,NONE,The bank typed the settlement ref in a different case (SETL_ vs setl_). An exact-string match loses the tie on both the order and the credit.
+bank_ch_0029,bank_reference,settlement_ref_case_mismatch,adversarial-gap,NONE,"Same case-mismatch, seen from the bank side: a valid credit looks orphaned."
+CH0092,bank_reference,confusing_narration_correct_ref,deterministic,NONE,"Narration name-drops an unrelated order id, but the settlement ref is correct — must still match cleanly."
+CH0100,missing_payment,order_without_capture,deterministic,MISSING_PAYMENT,Order exists in the ledger with no PSP capture at all.

@@ -83,7 +83,10 @@ python scripts/run_pipeline.py
 # 2) The signature metric: rules-only baseline vs. LLM-assisted, same held-out set
 python scripts/run_eval.py
 
-# 3) Serve the API
+# 3) Score against the INDEPENDENT hand-authored adversarial challenge suite
+python scripts/run_challenge.py            # add --use-llm to measure the Tier-3 lift
+
+# 4) Serve the API
 uvicorn closeloop.api:app --app-dir src --reload --port 8000
 ```
 
@@ -145,6 +148,39 @@ wrong. Those misses are the deliberately-injected gray-zone clean cases
 > This is a *believable, honest* baseline **by design** (see
 > [ARCHITECTURE.md](ARCHITECTURE.md) §Data strategy) — not a suspicious 100%.
 
+### Independent adversarial challenge suite
+
+*"How do we know the generated data isn't too convenient for the algorithm?"* —
+so we also score against a **separate, hand-authored, adversarial suite** the
+engine's tolerances were **never tuned against** (`python scripts/run_challenge.py`).
+The 30 cases in [`data/challenge/`](data/challenge/) are written by hand — not by
+the generator — to deliberately break specific assumptions: partial captures on
+the tolerance boundary, idempotent-retry duplicates (same `payment_id` twice),
+settlement timing vs. genuine loss, FX drift that mimics a fee error, refunds
+that look like chargebacks, chargebacks with the "wrong" narration, and bank
+credits with case-mismatched references.
+
+| On the adversarial suite (rules-only) | Value |
+|---|---|
+| Cases correct | **21 / 30 (70%)** |
+| Detection F1 | **0.71** (vs. 0.92 on generated data) |
+| Deliberate "break-our-assumptions" gaps | **9**, each reported by name |
+
+The point is the **gap**: the score is honestly *lower* than on our own data, and
+the script prints exactly which traps the rules miss — the FX/timing/idempotency
+cases that are precisely what the Gemini Tier-3 tier exists to resolve
+(`run_challenge.py --use-llm`). A suite the engine aces would prove nothing; one
+that exposes its edges is the credible test. See
+[`data/challenge/README.md`](data/challenge/README.md).
+
+### The reconciliation-loop visual
+
+The dashboard leads with a **money-flow waterfall** — every rupee followed
+`Orders → Captured → Settled → Bank-confirmed`, ending in the one split a finance
+lead cares about: **~₹2.09L auto-reconciled hands-off vs. ~₹1.39L surfaced for
+review**. Every figure is live from the engine, not hardcoded (backend
+`business_impact.flow`).
+
 ---
 
 ## API
@@ -181,11 +217,14 @@ razorpay/
 │   ├── evaluate.py      held-out metrics (P/R/F1, confusion matrix)
 │   └── api.py           FastAPI app
 ├── scripts/
-│   ├── run_pipeline.py  end-to-end run + honest error analysis
-│   └── run_eval.py      baseline vs. LLM-assisted lift table
-├── frontend/            React + Vite + Tailwind dashboard
+│   ├── run_pipeline.py    end-to-end run + honest error analysis
+│   ├── run_eval.py        baseline vs. LLM-assisted lift table
+│   ├── build_challenge.py authors the hand-designed adversarial suite
+│   └── run_challenge.py   scores the engine on that independent suite
+├── frontend/            React + Vite + Tailwind dashboard (money-flow loop first)
 ├── tests/test_engine.py engine unit tests (regression net behind the metrics)
-└── data/                generated CSVs, audit.db, llm_cache.json (gitignored)
+├── data/challenge/      frozen, committed adversarial challenge CSVs + manifest
+└── data/generated/      generated CSVs, audit.db, llm_cache.json (gitignored)
 ```
 
 ## Data & privacy

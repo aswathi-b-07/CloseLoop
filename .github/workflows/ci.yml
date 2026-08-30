@@ -25,6 +25,9 @@ jobs:
       - name: Run end-to-end pipeline (held-out metrics, no API key)
         run: python scripts/run_pipeline.py
 
+      - name: Score the independent adversarial challenge suite
+        run: python scripts/run_challenge.py
+
   frontend:
     name: Frontend — build
     runs-on: ubuntu-latest

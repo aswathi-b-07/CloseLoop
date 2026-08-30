@@ -160,6 +160,58 @@ def _business_impact() -> dict:
         "auto_reconciled_pct": round(reconciled / total, 4) if total else 0.0,
         "at_risk_inr": round(at_risk, 2),
         "at_risk_pct": round(at_risk / total, 4) if total else 0.0,
+        "flow": _money_flow(of, total, reconciled, at_risk),
+    }
+
+
+def _money_flow(of: pd.DataFrame, total: float, reconciled: float,
+                at_risk: float) -> dict:
+    """The reconciliation loop as money moving through four stages.
+
+    A strictly monotonic funnel measured on *order value* (the merchant's own
+    money view): every rupee ordered is either captured, then settled, then
+    bank-confirmed and auto-reconciled — or it drops out at a stage, which is
+    exactly where reconciliation risk lives. Ledger >= Captured >= Settled >=
+    Reconciled holds by construction, so the drops are real, attributable losses.
+    """
+    orders = state.dataset.orders
+    payments = state.dataset.payments
+    captured_ids = set(
+        payments.loc[payments["status"].isin(["captured", "refunded"]), "order_id"])
+    settled_ids = set(
+        payments.loc[payments["settlement_id"].astype(str) != "", "order_id"])
+
+    ledger = float(orders["amount"].sum())
+    captured = float(orders.loc[orders["order_id"].isin(captured_ids), "amount"].sum())
+    settled = float(orders.loc[orders["order_id"].isin(settled_ids), "amount"].sum())
+
+    def pct(v: float) -> float:
+        return round(v / ledger, 4) if ledger else 0.0
+
+    stages = [
+        {"key": "ordered", "label": "Orders (ledger)",
+         "hint": "Every order booked in the system of record",
+         "value_inr": round(ledger, 2), "pct": pct(ledger)},
+        {"key": "captured", "label": "Razorpay captured",
+         "hint": "A PSP capture exists for the order",
+         "value_inr": round(captured, 2), "pct": pct(captured),
+         "drop_inr": round(ledger - captured, 2)},
+        {"key": "settled", "label": "Settled to bank",
+         "hint": "Capture was batched into a settlement",
+         "value_inr": round(settled, 2), "pct": pct(settled),
+         "drop_inr": round(captured - settled, 2)},
+        {"key": "reconciled", "label": "Bank-confirmed",
+         "hint": "Three-way tie-out: ledger = PSP = bank",
+         "value_inr": round(reconciled, 2), "pct": pct(reconciled),
+         "drop_inr": round(settled - reconciled, 2)},
+    ]
+    return {
+        "ledger_value_inr": round(ledger, 2),
+        "stages": stages,
+        "auto_reconciled_inr": round(reconciled, 2),
+        "auto_reconciled_pct": pct(reconciled),
+        "at_risk_inr": round(at_risk, 2),
+        "at_risk_pct": pct(at_risk),
     }
 
 
