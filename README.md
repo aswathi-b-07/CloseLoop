@@ -41,11 +41,28 @@ CloseLoop automates that controller.
 > deterministic rule can settle for free. **This is the "appropriate AI use"
 > story.**
 
-```
- 3 sources ─▶  TIER 1  DETERMINISTIC   exact ids + zero-diff, clear breaks  ─▶ certain
- (ledger,      TIER 2  HEURISTIC       tolerance rules (rounding / FX / T+1) ─▶ high-conf
-  PSP report,  TIER 3  LLM (Gemini)    ONLY residual gray-zone cases         ─▶ adjudicated
-  bank stmt)   FALLBACK                LLM down / low-confidence → human      ─▶ never silently wrong
+```mermaid
+flowchart TD
+    SRC["3 sources<br/>order ledger · Razorpay PSP report · bank statement"] --> T1
+
+    T1["TIER 1 — Deterministic<br/>exact ids + zero-diff, clear breaks"]
+    T2["TIER 2 — Heuristic<br/>tolerance rules: rounding / FX / T+1"]
+    T3["TIER 3 — LLM (Gemini)<br/>only the residual gray-zone cases"]
+    FB["Fallback — Human review<br/>LLM down / low confidence"]
+
+    T1 -->|clear| CERTAIN([certain])
+    T1 -->|residual| T2
+    T2 -->|within tolerance| HIGH([high-confidence])
+    T2 -->|residual| T3
+    T3 -->|resolved| ADJ([adjudicated])
+    T3 -->|unsure| FB
+    FB --> HUMAN([never silently wrong])
+
+    CERTAIN --> FIND
+    HIGH --> FIND
+    ADJ --> FIND
+    HUMAN --> FIND
+    FIND["Every entity → exactly one Finding<br/>metrics · exception report · dashboard · audit trail"]
 ```
 
 Every entity produces exactly one **Finding**
